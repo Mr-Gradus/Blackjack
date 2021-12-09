@@ -36,18 +36,15 @@ public:
 	
 
 	
-	bool flip(bool face) {  // не понял пока как именно это должно работать
-		if (face == 0) {
-			return true;
-		}
-		else
-		return false;
+	void flip() {  
+		m_faceUp != m_faceUp;
 	}
 	
 	};
 
-int getValue(int v) {
-	return v;
+int getValue(int value) {
+	value = 0;
+	
 }
 	
 
@@ -78,8 +75,8 @@ class Game {
 int main()
 {
 	Card c("spades", 5, 0);
-	c.flip(0);
-	cout << c.flip(1) << endl;
+	c.flip();
+	cout << c.flip() << endl;
 
 
 
