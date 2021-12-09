@@ -6,23 +6,16 @@ using namespace std;
 
 class Card {
 private:
-	string m_suit; //масть
-	int m_value;  //значение 
-	bool m_face;   // вверх или вниз рубашкой/лицом
-public:
-	Card(string suit, int value, bool face) : m_suit(suit), m_value(value), m_face(face) {}
-	
-	enum class SuitType {
+	enum suit  {
 		spades,
 		hearts,
 		diamonds,
 		clubs
 	};
-
-	enum class ValueType { 
+	enum value {
 		two = 2, // или картам до вальта не надо присваивать значения?
-		three =3,
-		four = 4, 
+		three = 3,
+		four = 4,
 		five = 5,
 		six = 6,
 		seven = 7,
@@ -34,6 +27,15 @@ public:
 		king = 10,
 		ace = 1
 	};
+
+	suit m_suit; //масть
+	value m_rank;  //значение 
+	bool m_faceUp;   // вверх или вниз рубашкой/лицом
+public:
+	Card(suit suit, value rank, bool face) : m_suit(suit), m_rank(rank), m_faceUp(face) {}
+	
+
+	
 	bool flip(bool face) {  // не понял пока как именно это должно работать
 		if (face == 0) {
 			return true;
@@ -75,7 +77,7 @@ class Game {
 
 int main()
 {
-	Card c("clubs", 5, 0);
+	Card c("spades", 5, 0);
 	c.flip(0);
 	cout << c.flip(1) << endl;
 
