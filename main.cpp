@@ -20,14 +20,26 @@ public:
 	};
 
 	enum class ValueType { 
-		two, three, four, 
-		five, six, seven,
-		eight, nine, ten,
-		jack, queen, king,
-		ace
+		two = 2, // или картам до вальта не надо присваивать значения?
+		three =3,
+		four = 4, 
+		five = 5,
+		six = 6,
+		seven = 7,
+		eight = 8,
+		nine = 9,
+		ten = 10,
+		jack = 10,
+		queen = 10,
+		king = 10,
+		ace = 1
 	};
-	bool flip() {
-		if ()
+	bool flip(bool face) {  // не понял пока как именно это должно работать
+		if (face == 0) {
+			return true;
+		}
+		else
+		return false;
 	}
 	
 	};
@@ -63,7 +75,9 @@ class Game {
 
 int main()
 {
-
+	Card c("clubs", 5, 0);
+	c.flip(0);
+	cout << c.flip(1) << endl;
 
 
 
