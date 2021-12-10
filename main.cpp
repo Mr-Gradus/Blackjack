@@ -1,54 +1,75 @@
 #include <iostream>
 #include <locale>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 class Card {
 public:
-	enum suit  {
-		spades,
-		hearts,
-		diamonds,
-		clubs
+	enum suit {
+		SPADES,
+		HEARTS,
+		DIAMONDS,
+		CLUBS
 	};
 	enum rank {
-		two = 2, // или картам до вальта не надо присваивать значени€?
-		three = 3,
-		four = 4,
-		five = 5,
-		six = 6,
-		seven = 7,
-		eight = 8,
-		nine = 9,
-		ten = 10,
-		jack = 10,
-		queen = 10,
-		king = 10,
-		ace = 1
+		ACE = 1,
+		TWO,
+		THREE,
+		FOUR,
+		FIVE,
+		SIX,
+		SEVEN,
+		EIGHT,
+		NINE,
+		TEN,
+		JACK,
+		QUEEN,
+		KING,
 	};
 
-	Card(rank r = ace, suit s = spades, bool ifu = true);
+	Card(rank r = ACE, suit s = SPADES, bool ifu = true);
+
+	/*
+	ѕерегружаем оператор << чтобы отправл€ть объекты типа Card
+	в стандартный поток вывода
+	*/
 	
 	friend ostream& operator<< (ostream& os, const Card& aCard);
-	
+
 	int GetValue() const;
 
+	void Flip();
 
-	bool m_faceUp;   // вверх или вниз рубашкой/лицом
-public:
-	Card(suit suit, value rank, bool face) : m_suit(suit), m_rank(rank), m_faceUp(face) {}
+private:
+	rank m_Rank;
+	suit m_Suit;
+	bool m_IsFaceUp;
+};
 	
+Card::Card(rank r, suit s, bool ifu) : m_Rank(r), m_Suit(s), m_IsFaceUp(ifu)
+{}
 
-	
-	void flip() {  
-		m_faceUp != m_faceUp;
+int Card::GetValue() const
+{
+	int value = 0; //карта картинкой вниз
+	if (m_IsFaceUp)
+	{
+		value = m_Rank; // значение карты соответственно пор€дку в списке enum rank,
+		// а с этого пр€м кайфанул )) просто но эффективно, значение 10 дл€ дам, королей, вальтов
+		if (value > 10)
+		{
+			value = 10;
+		}
 	}
-	
-	};
+	return value;
+}
+	void Card::Flip()
+	{
+		m_IsFaceUp = !(m_IsFaceUp); // интересно через сколько мес€цев/лет опыта такие решени€ сами приход€т в голову?
 
-
-	
+	}
 
 	
 
