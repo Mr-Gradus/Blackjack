@@ -5,14 +5,14 @@
 using namespace std;
 
 class Card {
-private:
+public:
 	enum suit  {
 		spades,
 		hearts,
 		diamonds,
 		clubs
 	};
-	enum value {
+	enum rank {
 		two = 2, // или картам до вальта не надо присваивать значени€?
 		three = 3,
 		four = 4,
@@ -28,8 +28,13 @@ private:
 		ace = 1
 	};
 
-	suit m_suit; //масть
-	value m_rank;  //значение 
+	Card(rank r = ace, suit s = spades, bool ifu = true);
+	
+	friend ostream& operator<< (ostream& os, const Card& aCard);
+	
+	int GetValue() const;
+
+
 	bool m_faceUp;   // вверх или вниз рубашкой/лицом
 public:
 	Card(suit suit, value rank, bool face) : m_suit(suit), m_rank(rank), m_faceUp(face) {}
@@ -42,10 +47,9 @@ public:
 	
 	};
 
-int getValue(int value) {
-	value = 0;
+
 	
-}
+
 	
 
 class Hand {
