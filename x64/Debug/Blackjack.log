@@ -1,4 +1,2 @@
 ﻿  main.cpp
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(80,23): error C2664: "Card::Card(Card::suit,Card::value,bool)": невозможно преобразовать аргумент 1 из "const char [7]" в "Card::suit"
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(80,9): message : Не существует контекста, в котором такое преобразование возможно
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(35,2): message : см. объявление "Card::Card"
+  Blackjack.vcxproj -> D:\YandexDisk\Coding\GeekBrains\Blackjack\x64\Debug\Blackjack.exe

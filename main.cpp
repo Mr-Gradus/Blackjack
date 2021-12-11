@@ -74,8 +74,90 @@ int Card::GetValue() const
 	
 
 class Hand {
+public:
+	Hand();
+	virtual ~Hand(); // виртуальный деструктор
 
+	void Add(Card* pCard); // добавляет карту в руку
+
+	void Clear(); // очищает руку от карт
+
+	int GetTotal() const; // получаем сумму карт на руках, присваивая тузу 1 или 11 
+
+protected:
+	vector<Card*> m_Cards;
 };
+
+Hand::Hand()
+{
+	m_Cards.reserve(7);
+}
+
+Hand::~Hand() // по прежнему виртуальный деструктор
+{
+	Clear();
+}
+
+void Hand::Add(Card* pCard)
+{
+	m_Cards.push_back(pCard);
+}
+
+void Hand::Clear() //проходит по вектору освобождая всю память в куче
+{
+	vector<Card*>::iterator iter = m_Cards.begin();
+	for (; iter != m_Cards.end(); ++iter)
+	{
+		Card* card = *iter;
+		delete card;
+		*iter = nullptr;
+	}
+	m_Cards.clear(); // очистка вектора указателей
+}
+
+int Hand::GetTotal() const
+{
+	if (m_Cards.empty()) // если в руке нет карт возвращаем 0
+	{
+		return 0;
+	}
+
+	if (m_Cards[0]->GetValue() == 0) //если первая карта со значением 0 то она рубашкой вверх, возврат 0
+	{
+		return 0;
+	}
+
+	int total = 0; // находим сумму очков карт в руке при туз = 1
+	vector<Card*>::const_iterator iter;
+	for (iter = m_Cards.begin(); iter != m_Cards.end(); ++iter)
+	{
+		total += (*iter)->GetValue();
+	}
+
+	bool containsAce = false; // определяем есть ли туз в руке
+	for (iter = m_Cards.begin(); iter != m_Cards.end(); ++iter)
+	{
+		if ((*iter)->GetValue() == Card::ACE)
+		{
+			containsAce = true;
+		}
+	}
+
+	if (containsAce && total <= 11) // если есть туз и сумма меньше 12 туз дает 11 очков
+	{
+		total += 10; // очки только за один туз, даже если их в руке больше
+	}
+
+	return total;
+}
+
+
+
+
+
+
+
+
 
 class Deck : private Hand {
 
@@ -99,11 +181,6 @@ class Game {
 
 int main()
 {
-	Card c("spades", 5, 0);
-	c.flip();
-	cout << c.flip() << endl;
-
-
 
 	return 0;
 }
