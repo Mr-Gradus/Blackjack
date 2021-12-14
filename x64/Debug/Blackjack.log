@@ -1,2 +1,5 @@
 ﻿  main.cpp
-  Blackjack.vcxproj -> D:\YandexDisk\Coding\GeekBrains\Blackjack\x64\Debug\Blackjack.exe
+D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(195,2): error C2059: синтаксическая ошибка: {
+D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(195,2): error C2334: непредвиденные лексемы перед "{"; пропуск вероятного тела функции
+D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(200,2): error C2059: синтаксическая ошибка: {
+D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(200,2): error C2334: непредвиденные лексемы перед "{"; пропуск вероятного тела функции

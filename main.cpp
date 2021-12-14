@@ -47,6 +47,7 @@ private:
 	suit m_Suit;
 	bool m_IsFaceUp;
 };
+
 	
 Card::Card(rank r, suit s, bool ifu) : m_Rank(r), m_Suit(s), m_IsFaceUp(ifu)
 {}
@@ -71,7 +72,22 @@ int Card::GetValue() const
 
 	}
 
-	
+	ostream& operator<<(ostream& os, const Card& aCard) // перегрузка << дл€ отправки объектов типа Card в поток cout
+	{
+		const string RANKS[] = { "0", "A", "2", "3", "4", "5", "6", "7", "8", "9","10", "J", "Q", "K" };
+		const string SUITS[] = { "s", "h", "d", "c" };
+
+		if (aCard.m_IsFaceUp)
+		{
+			os << RANKS[aCard.m_Rank] << SUITS[aCard.m_Suit];
+		}
+		else
+		{
+			os << "XX";
+		}
+
+		return os;
+	};
 
 class Hand {
 public:
@@ -164,8 +180,58 @@ class Deck : private Hand {
 };
 
 class GenericPlayer : private Hand {
+protected:
+	string m_Name;
+	
+	friend ostream& operator<<(ostream& os, const GenericPlayer& aGenericPlayer);
+public:
+	GenericPlayer(const string& name = "") : m_Name(name) {};
 
+	virtual ~GenericPlayer() {};
+
+	virtual bool IsHitting() const = 0; // реализовать в классах игрок/компьютер 
+
+	bool IsBusted() const;
+	{
+		return (GetTotal() > 21);
+	}
+
+	void Bust() const; // объ€вл€ет перебор очков
+	{
+		cout << m_Name << " BUSTED.\n";
+	}
+
+	
 };
+
+ostream& operator<<(ostream& os, const GenericPlayer& aGenericPlayer)
+{
+	os << aGenericPlayer.m_Name << ":\t";
+
+	vector<Card*>::const_iterator pCard;
+	if (!aGenericPlayer.m_Cards.empty())
+	{
+		for (pCard = aGenericPlayer.m_Cards.begin();
+			pCard != aGenericPlayer.m_Cards.end();
+			++pCard)
+		{
+			os << *(*pCard) << "\t";
+		}
+
+
+		if (aGenericPlayer.GetTotal() != 0)
+		{
+			cout << "(" << aGenericPlayer.GetTotal() << ")";
+		}
+	}
+	else
+	{
+		os << "<empty>";
+	}
+
+	return os;
+};
+
 
 class Player : private GenericPlayer {
 
