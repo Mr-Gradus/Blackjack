@@ -169,12 +169,6 @@ int Hand::GetTotal() const
 
 
 
-
-
-
-
-
-
 class Deck : private Hand {
 
 };
@@ -198,7 +192,7 @@ public:
 
 	void Bust() const; // объявляет перебор очков
 	{
-		cout << m_Name << " BUSTED.\n";
+		cout << m_Name << " BUSTED." << endl;;
 	}
 
 	
@@ -233,11 +227,61 @@ ostream& operator<<(ostream& os, const GenericPlayer& aGenericPlayer)
 };
 
 
-class Player : private GenericPlayer {
+class Player : public GenericPlayer {
+public:
+	Player(const string& name = "") {};
 
+	virtual ~Player() {};
+
+	
+	virtual bool IsHitting() const;  // брать ли еще  карты 
+	{
+		cout << m_Name << ", do you want a hit? (Y/N): ";
+		char response;
+		cin >> response;
+		return (response == 'y' || response == 'Y');
+	}
+
+	
+	void Win() const; //  игрок победил
+	{
+		cout << m_Name << " WINS." << endl;;
+	}
+	
+	void Lose() const;  // игрок проиграл
+	{
+		cout << m_Name << " LOSE." << endl;
+	}
+	
+	void Push() const; // ничья
+	{
+		cout << m_Name << " PUSH." << endl;;
+	}
 };
 
-class House : private GenericPlayer {
+class House : public GenericPlayer {
+public:
+	House(const string& name = "House");
+
+	virtual ~House();
+
+	
+	virtual bool IsHitting() const; // дилер продолжает брать карты или нет
+	{
+		return (GetTotal() <= 16);
+	}
+
+	void FlipFirstCard(); // переворачивает первую карту
+	{
+		if (!(m_Cards.empty()))
+		{
+			m_Cards[0]->Flip();
+		}
+		else
+		{
+			cout << "No card to flip!" << endl;
+		}
+	}
 
 };
 
