@@ -49,9 +49,7 @@ private:
 };
 
 	
-Card::Card(rank r, suit s, bool ifu) : m_Rank(r), m_Suit(s), m_IsFaceUp(ifu)
-{}
-
+Card::Card(rank r, suit s, bool ifu) : m_Rank(r), m_Suit(s), m_IsFaceUp(ifu) {};
 int Card::GetValue() const
 {
 	int value = 0; //карта картинкой вниз
@@ -66,13 +64,13 @@ int Card::GetValue() const
 	}
 	return value;
 }
-	void Card::Flip()
+void Card::Flip()
 	{
 		m_IsFaceUp = !(m_IsFaceUp); // интересно через сколько мес€цев/лет опыта такие решени€ сами приход€т в голову?
 
 	}
 
-	ostream& operator<<(ostream& os, const Card& aCard) // перегрузка << дл€ отправки объектов типа Card в поток cout
+ostream& operator<<(ostream& os, const Card& aCard) // перегрузка << дл€ отправки объектов типа Card в поток cout
 	{
 		const string RANKS[] = { "0", "A", "2", "3", "4", "5", "6", "7", "8", "9","10", "J", "Q", "K" };
 		const string SUITS[] = { "s", "h", "d", "c" };
@@ -91,7 +89,8 @@ int Card::GetValue() const
 
 class Hand {
 public:
-	Hand();
+	Hand() {};
+	
 	virtual ~Hand(); // виртуальный деструктор
 
 	void Add(Card* pCard); // добавл€ет карту в руку
@@ -99,7 +98,7 @@ public:
 	void Clear(); // очищает руку от карт
 
 	int GetTotal() const; // получаем сумму карт на руках, присваива€ тузу 1 или 11 
-
+	
 protected:
 	vector<Card*> m_Cards;
 };
@@ -173,30 +172,36 @@ class Deck : private Hand {
 
 };
 
-class GenericPlayer : private Hand {
+class GenericPlayer : public Hand {
 protected:
 	string m_Name;
 	
 	friend ostream& operator<<(ostream& os, const GenericPlayer& aGenericPlayer);
 public:
-	GenericPlayer(const string& name = "") : m_Name(name) {};
+	GenericPlayer(const string& name = "");
 
 	virtual ~GenericPlayer() {};
 
 	virtual bool IsHitting() const = 0; // реализовать в классах игрок/компьютер 
 
 	bool IsBusted() const;
-	{
-		return (GetTotal() > 21);
-	}
 
 	void Bust() const; // объ€вл€ет перебор очков
-	{
-		cout << m_Name << " BUSTED." << endl;;
-	}
-
-	
 };
+
+GenericPlayer::GenericPlayer(const string& name) : m_Name(name){}
+
+GenericPlayer::~GenericPlayer(){}
+
+bool GenericPlayer::IsBusted() const
+{
+	return (GetTotal() > 21);
+}
+
+void  GenericPlayer::Bust() const
+{
+	cout << m_Name << " BUSTED." << endl;
+}
 
 ostream& operator<<(ostream& os, const GenericPlayer& aGenericPlayer)
 {
@@ -229,61 +234,77 @@ ostream& operator<<(ostream& os, const GenericPlayer& aGenericPlayer)
 
 class Player : public GenericPlayer {
 public:
-	Player(const string& name = "") {};
+	Player(const string& name = "");
 
 	virtual ~Player() {};
 
-	
-	virtual bool IsHitting() const;  // брать ли еще  карты 
-	{
-		cout << m_Name << ", do you want a hit? (Y/N): ";
-		char response;
-		cin >> response;
-		return (response == 'y' || response == 'Y');
-	}
-
-	
+	virtual bool IsHitting() const override;  // брать ли еще  карты 
+		
 	void Win() const; //  игрок победил
-	{
-		cout << m_Name << " WINS." << endl;;
-	}
 	
 	void Lose() const;  // игрок проиграл
-	{
-		cout << m_Name << " LOSE." << endl;
-	}
 	
 	void Push() const; // ничь€
-	{
-		cout << m_Name << " PUSH." << endl;;
-	}
 };
+
+Player::Player(const string& name) : GenericPlayer(name) {};
+
+Player::~Player(){}
+
+bool Player::IsHitting() const
+{
+	cout << m_Name << ", do you want a hit? (Y/N): ";
+	char response;
+	cin >> response;
+	return (response == 'y' || response == 'Y');
+}
+void Player::Win() const
+{
+	cout << m_Name << " WINS." << endl;
+}
+
+void Player::Lose() const
+{
+	cout << m_Name << " LOSE." << endl;
+}
+
+void Player::Push() const
+{
+	cout << m_Name << " PUSH." << endl;
+}
 
 class House : public GenericPlayer {
 public:
 	House(const string& name = "House");
 
 	virtual ~House();
-
 	
 	virtual bool IsHitting() const; // дилер продолжает брать карты или нет
-	{
-		return (GetTotal() <= 16);
-	}
 
 	void FlipFirstCard(); // переворачивает первую карту
-	{
-		if (!(m_Cards.empty()))
-		{
-			m_Cards[0]->Flip();
-		}
-		else
-		{
-			cout << "No card to flip!" << endl;
-		}
-	}
 
 };
+
+House::House(const string& name) : GenericPlayer(name){}
+
+House::~House(){}
+
+bool House::IsHitting() const // возврат true если <= 16 очков либо false
+{
+	return (GetTotal() <= 16);
+}
+
+void House::FlipFirstCard() 
+{
+	if (!(m_Cards.empty()))
+	{
+		m_Cards[0]->Flip();
+	}
+	else
+	{
+		cout << "No card to flip!" << endl;
+	}
+}
 
 class Game {
 
