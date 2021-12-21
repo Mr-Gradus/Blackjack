@@ -2,6 +2,7 @@
 #include <locale>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -89,7 +90,7 @@ ostream& operator<<(ostream& os, const Card& aCard) // перегрузка << для отправк
 
 class Hand {
 public:
-	Hand() {};
+	Hand();
 	
 	virtual ~Hand(); // виртуальный деструктор
 
@@ -168,9 +169,7 @@ int Hand::GetTotal() const
 
 
 
-class Deck : private Hand {
 
-};
 
 class GenericPlayer : public Hand {
 protected:
@@ -180,7 +179,7 @@ protected:
 public:
 	GenericPlayer(const string& name = "");
 
-	virtual ~GenericPlayer() {};
+	virtual ~GenericPlayer();
 
 	virtual bool IsHitting() const = 0; // реализовать в классах игрок/компьютер 
 
@@ -236,7 +235,7 @@ class Player : public GenericPlayer {
 public:
 	Player(const string& name = "");
 
-	virtual ~Player() {};
+	virtual ~Player();
 
 	virtual bool IsHitting() const override;  // брать ли еще  карты 
 		
@@ -306,9 +305,175 @@ void House::FlipFirstCard()
 	}
 }
 
-class Game {
 
+class Deck : private Hand {
+public:
+	Deck();
+
+	virtual ~Deck();
+
+	void Populate(); // создает колоду 52 карты
+
+	void Shuffle(); // тусует
+
+	void Deal(Hand& aHand); //раздает по одной карте в руку
+
+	void AdditionalCards(GenericPlayer& aGenericPlayer); // раздает доп карты игроку
 };
+
+Deck::Deck()
+{
+	m_Cards.reserve(52);
+	Populate();
+}
+
+Deck::~Deck() {}
+
+void Deck::Populate()
+{
+	Clear();
+	for (int s = Card::SPADES; s <= Card::CLUBS; ++s)
+	{
+		for (int r = Card::ACE; r <= Card::KING; ++r)
+		{
+			Add(new Card(static_cast<Card::rank>(r), static_cast<Card::suit>(s)));
+		}
+	}
+}
+
+void Deck::Shuffle()
+{
+	random_shuffle(m_Cards.begin(), m_Cards.end());
+}
+
+void Deck::Deal(Hand& aHand)
+{
+	if (!m_Cards.empty())
+	{
+		aHand.Add(m_Cards.back());
+		m_Cards.pop_back();
+	}
+	else
+	{
+		cout << "Out of cards. Unable to deal.";
+	}
+}
+
+void Deck::AdditionalCards(GenericPlayer& aGenericPlayer)
+{
+	cout << endl;
+	while (!(aGenericPlayer.IsBusted()) && aGenericPlayer.IsHitting())
+	{
+		Deal(aGenericPlayer);
+
+		cout << aGenericPlayer << endl;
+
+		if (aGenericPlayer.IsBusted())
+		{
+			aGenericPlayer.Bust();
+		}
+	}
+}
+
+class Game {
+public:
+	Game(const vector<string>& names);
+	
+	~Game();
+
+	void Play(); //ведет игру
+
+private:
+	Deck m_Deck;
+	House m_House;
+	vector<Player> m_Players;
+};
+
+/*Конструктор принимает ссылку на вектор строк, представляющих
+имена игроков-людей. Конструктор создает объект класса Player для каждого имени*/
+
+Game::Game(const vector<string>& names)
+{
+	vector<string>::const_iterator pName;  // создает вектор игроков из вектора имен
+	for (pName = names.begin(); pName != names.end(); ++pName)
+	{
+		m_Players.push_back(Player(*pName));
+	}
+	srand(static_cast<unsigned int>(time(0)));
+	m_Deck.Populate();
+	m_Deck.Shuffle();
+}
+
+Game::~Game() {}
+
+void Game::Play()
+{
+	vector<Player>::iterator pPlayer; // раздача каждому по две карты в начале
+	for (int i = 0; i < 2; ++i)
+	{
+		for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+		{
+			m_Deck.Deal(*pPlayer);
+		}
+		m_Deck.Deal(m_House);
+	}
+	m_House.FlipFirstCard(); // переворачивает первую карту дилера
+
+	for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+	{
+		cout << *pPlayer << endl;
+	}
+
+	cout << m_House << endl;
+
+	for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+	{
+		m_Deck.AdditionalCards(*pPlayer); //раздает доп карты игрокам
+	}
+
+	m_House.FlipFirstCard(); // переворачивает первую карту дилера
+	cout << endl << m_House;
+
+	m_Deck.AdditionalCards(m_House); // раздает доп карты дилеру
+
+	if (m_House.IsBusted())
+	{  // Все кто остался в игре победили
+		for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer);
+		{
+			if (!(pPlayer->IsBusted()))
+			{
+				pPlayer->Win();
+			}
+		}
+	}
+	else
+	{//срванение сумм очков оставшихся игроков с дилером
+		for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+		{
+			if (!(pPlayer->IsBusted()))
+			{
+				if (pPlayer->GetTotal() > m_House.GetTotal())
+				{
+					pPlayer->Win();
+				}
+				else if (pPlayer->GetTotal() < m_House.GetTotal())
+				{
+					pPlayer->Lose();
+				}
+				else
+				{
+					pPlayer->Push();
+				}
+			}
+		}
+	}
+	
+	for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+	{
+		pPlayer->Clear();  // очищает руки всех игроков
+	}
+	m_House.Clear();
+}
 
 
 int main()
