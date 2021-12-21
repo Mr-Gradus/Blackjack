@@ -1,8 +1,2 @@
 ﻿  main.cpp
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(107,1): error C2084: функция "Hand::Hand(void)" уже имеет текст реализации
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(92): message : см. предыдущее определение "{ctor}"
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(192,64): error C2264: Hand::Hand: ошибка в определении или объявлении функции; функция не вызвана
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(194,32): error C2084: функция "GenericPlayer::~GenericPlayer(void)" уже имеет текст реализации
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(183): message : см. предыдущее определение "{dtor}"
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(252,18): error C2084: функция "Player::~Player(void)" уже имеет текст реализации
-D:\YandexDisk\Coding\GeekBrains\Blackjack\main.cpp(239): message : см. предыдущее определение "{dtor}"
+  Blackjack.vcxproj -> D:\YandexDisk\Coding\GeekBrains\Blackjack\x64\Debug\Blackjack.exe

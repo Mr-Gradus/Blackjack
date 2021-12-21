@@ -478,7 +478,36 @@ void Game::Play()
 
 int main()
 {
-
+	setlocale(LC_ALL, "Russian");
 	
+	cout << "$$$$$$$$$$  Добро пожаловать в игру BLACKJACK  $$$$$$$$$$" << endl << endl;
+	
+	int numOfPlayers = 0;
+	while (numOfPlayers < 1 || numOfPlayers > 5)
+	{
+		cout << "Сколько будет игроков? (1 - 5): ";
+		cin >> numOfPlayers;
+	}
+	cout << endl;
+
+	vector<string> names;
+	string name;
+	for (int n = 0; n < numOfPlayers; ++n)
+	{
+		cout << "Введите имя: ";
+		cin >> name;
+		names.push_back(name);
+	}
+	cout << endl;
+
+	Game aGame(names);
+	char again = 'y';
+	while (again != 'n' && again != 'N')
+	{
+		aGame.Play();
+		cout << "Do you want to play again? (Y/N): ";
+		cin >> again;
+	}
+
 	return 0;
 }
